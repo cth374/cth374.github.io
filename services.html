@@ -11,6 +11,11 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">The Handy Mantis</div>
+            <button class="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <ul class="nav-menu">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="services.html" class="active">Services</a></li>
@@ -42,51 +47,53 @@
                     </div>
                 </div>
                 <p class="pricing-note">Most jobs are completed within 1-2 hours</p>
+                <p class="pricing-disclaimer">Pricing may vary based on job complexity and materials needed. Contact us for a free estimate tailored to your specific project.</p>
             </div>
 
             <h2>What We Do</h2>
             
             <div class="service-category">
-                <h3>🚽 Plumbing Services</h3>
-                <ul>
-                    <li>Toilet installation and replacement</li>
-                    <li>Fixing running toilets</li>
-                    <li>Leaky faucet repairs</li>
-                    <li>Drain cleaning (minor clogs)</li>
-                    <li>Replacing supply lines and shut-off valves</li>
-                </ul>
-            </div>
-
-            <div class="service-category">
-                <h3>🚪 Doors & Hardware</h3>
+                <h3>🔨 Simple Repairs & Installations</h3>
                 <ul>
                     <li>Doorknob and lock installation</li>
-                    <li>Door adjustment and repair</li>
+                    <li>Picture and mirror hanging</li>
+                    <li>Shelving installation</li>
+                    <li>Furniture assembly</li>
                     <li>Cabinet hardware installation</li>
+                    <li>Light fixture replacement</li>
                     <li>Weather stripping replacement</li>
                 </ul>
             </div>
 
             <div class="service-category">
-                <h3>🎨 Painting</h3>
+                <h3>🎨 Painting & Finishing</h3>
                 <ul>
                     <li>Interior room painting</li>
                     <li>Touch-up and repair work</li>
                     <li>Trim and baseboard painting</li>
+                    <li>Drywall patching and repair</li>
+                    <li>Caulking and sealing</li>
                     <li>Small exterior touch-ups</li>
                 </ul>
             </div>
 
             <div class="service-category">
-                <h3>🔨 General Repairs & Maintenance</h3>
+                <h3>🚽 Plumbing Repairs</h3>
                 <ul>
-                    <li>Drywall patching and repair</li>
-                    <li>Shelving installation</li>
-                    <li>Picture and mirror hanging</li>
-                    <li>Furniture assembly</li>
+                    <li>Fixing running toilets</li>
+                    <li>Leaky faucet repairs</li>
+                    <li>Toilet installation and replacement</li>
+                    <li>Replacing supply lines and shut-off valves</li>
+                    <li>Drain cleaning (minor clogs)</li>
+                </ul>
+            </div>
+
+            <div class="service-category">
+                <h3>🚪 Doors & Carpentry</h3>
+                <ul>
+                    <li>Door adjustment and repair</li>
                     <li>Minor carpentry work</li>
-                    <li>Light fixture replacement</li>
-                    <li>Caulking and sealing</li>
+                    <li>Custom projects by request</li>
                 </ul>
             </div>
 
@@ -110,9 +117,28 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 The Handy Mantis, LLC. All rights reserved.</p>
+            <p>&copy; 2026 The Handy Mantis. All rights reserved.</p>
             <p>Serving Independence, MO and surrounding areas</p>
         </div>
     </footer>
+
+    <script>
+        // Hamburger menu toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Close menu when clicking on a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+    </script>
 </body>
 </html>

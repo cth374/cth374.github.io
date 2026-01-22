@@ -1,6 +1,6 @@
 # The Handy Mantis Website
 
-Professional handyman services website for The Handy Mantis, LLC serving Independence, MO and surrounding areas.
+Professional handyman services website for The Handy Mantis serving Independence, MO and surrounding areas.
 
 ## Files Included
 
