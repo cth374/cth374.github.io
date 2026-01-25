@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Invoice Logger</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #2d5016;
+            --light-green: #4a7c2c;
+            --accent-orange: #e67e22;
+            --text-dark: #333;
+            --bg-light: #f8f9fa;
+            --white: #ffffff;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-light);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background-color: var(--primary-green);
+            color: var(--white);
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 0 0 8px 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .auth-card {
+            border-radius: 8px;
+            margin-top: 100px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--light-green);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-green);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--light-green);
+        }
+
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: var(--accent-orange);
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d35400;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .message.success {
+            background-color: #e8f5e9;
+            color: var(--primary-green);
+            border: 2px solid var(--light-green);
+        }
+
+        .message.error {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 2px solid #e57373;
+        }
+
+        .optional {
+            color: #999;
+            font-weight: normal;
+            font-size: 0.9em;
+        }
+
+        .logout-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .logout-link a {
+            color: var(--primary-green);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .logout-link a:hover {
+            text-decoration: underline;
+        }
+
+        #auth-section {
+            display: block;
+        }
+
+        #app-section {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Authentication Section -->
+    <div id="auth-section">
+        <div class="container">
+            <div class="header">
+                <h1>🔒 Invoice Logger</h1>
+            </div>
+            <div class="card auth-card">
+                <div id="auth-message"></div>
+                <form id="auth-form">
+                    <div class="form-group">
+                        <label for="password">Enter Password</label>
+                        <input type="password" id="password" required autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="btn">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Section -->
+    <div id="app-section">
+        <div class="container">
+            <div class="header">
+                <h1>📋 Log Invoice</h1>
+            </div>
+            <div class="card">
+                <div id="form-message"></div>
+                
+                <form id="invoice-form">
+                    <div class="form-group">
+                        <label for="customer">Customer Name *</label>
+                        <input type="text" id="customer" name="customer" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Amount ($) *</label>
+                        <input type="number" id="amount" name="amount" step="0.01" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">Date *</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Job Description <span class="optional">(optional)</span></label>
+                        <textarea id="description" name="description" placeholder="e.g., Toilet replacement, doorknob installation"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="payment-method">Payment Method <span class="optional">(optional)</span></label>
+                        <select id="payment-method" name="payment_method">
+                            <option value="">Select method</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Check">Check</option>
+                            <option value="Venmo">Venmo</option>
+                            <option value="Zelle">Zelle</option>
+                            <option value="Card">Card</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Notes <span class="optional">(optional)</span></label>
+                        <textarea id="notes" name="notes" placeholder="Any additional notes"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn" id="submit-btn">Save Invoice</button>
+                    <button type="button" class="btn btn-secondary" id="quick-save-btn">Quick Save (Name & Amount Only)</button>
+                </form>
+
+                <div class="logout-link">
+                    <a href="#" id="logout-link">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwKUrFfZ19MjFm9B5KjkRDIhsh3UvlJHrnPes-04PqktpyyDM0aZJ5D85pA3uQCZwJG/exec";
+
+        // Authentication
+        function checkAuth() {
+            const storedPassword = sessionStorage.getItem('invoiceAuth');
+            if (storedPassword === 'yes') {
+                showApp();
+                return true;
+            }
+            return false;
+        }
+
+        document.getElementById('auth-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const password = document.getElementById('password').value;
+            const authMessage = document.getElementById('auth-message');
+
+            try {
+                const formData = new FormData();
+                formData.append('type', 'auth');
+                formData.append('password', password);
+                
+                const res = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                if (data.ok === true) {
+                    sessionStorage.setItem('invoiceAuth', 'yes');
+                    showApp();
+                } else {
+                    authMessage.innerHTML = '<div class="message error">Incorrect password</div>';
+                    setTimeout(() => authMessage.innerHTML = '', 3000);
+                }
+            } catch (err) {
+                console.error(err);
+                authMessage.innerHTML = '<div class="message error">Authentication error</div>';
+                setTimeout(() => authMessage.innerHTML = '', 3000);
+            }
+        });
+
+        document.getElementById('logout-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            sessionStorage.removeItem('invoiceAuth');
+            location.reload();
+        });
+
+        function showApp() {
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('app-section').style.display = 'block';
+            setTodayDate();
+        }
+
+        // Set today's date as default
+        function setTodayDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+        }
+
+        // Invoice Form Submission
+        const form = document.getElementById('invoice-form');
+        const formMessage = document.getElementById('form-message');
+        const submitBtn = document.getElementById('submit-btn');
+        const quickSaveBtn = document.getElementById('quick-save-btn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitInvoice(false);
+        });
+
+        quickSaveBtn.addEventListener('click', async () => {
+            // Validate required fields only
+            const customer = document.getElementById('customer').value;
+            const amount = document.getElementById('amount').value;
+            
+            if (!customer || !amount) {
+                showMessage('Please fill in Customer Name and Amount', 'error');
+                return;
+            }
+            
+            await submitInvoice(true);
+        });
+
+        async function submitInvoice(quickSave) {
+            const customer = document.getElementById('customer').value;
+            const amount = document.getElementById('amount').value;
+            const date = document.getElementById('date').value;
+            const description = document.getElementById('description').value;
+            const paymentMethod = document.getElementById('payment-method').value;
+            const notes = document.getElementById('notes').value;
+
+            // Disable buttons
+            submitBtn.disabled = true;
+            quickSaveBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+            formMessage.innerHTML = '';
+
+            try {
+                const formData = new FormData();
+                formData.append('type', 'invoice');
+                formData.append('customer', customer);
+                formData.append('amount', amount);
+                formData.append('date', date);
+                formData.append('description', description || '');
+                formData.append('payment_method', paymentMethod || '');
+                formData.append('notes', notes || '');
+
+                const response = await fetch(SCRIPT_URL + "?type=invoice", {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (!result.ok) {
+                    throw new Error(result.error || "Server error");
+                }
+
+                showMessage('✓ Invoice saved successfully!', 'success');
+                form.reset();
+                setTodayDate();
+
+                // Scroll to top to see message
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Error saving invoice. Please try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                quickSaveBtn.disabled = false;
+                submitBtn.textContent = 'Save Invoice';
+            }
+        }
+
+        function showMessage(text, type) {
+            formMessage.innerHTML = `<div class="message ${type}">${text}</div>`;
+            setTimeout(() => {
+                formMessage.innerHTML = '';
+            }, 3000);
+        }
+
+        // Check auth on page load
+        checkAuth();
+    </script>
+</body>
+</html>
